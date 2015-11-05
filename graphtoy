@@ -1,0 +1,18 @@
+    G.add_node('source')
+    G.add_node('sink')
+    total_demand=0
+    G.node['source']['demand']=0
+    G.node['sink']['demand']=0
+    for v in G.nodes():
+        if G.node[v]['demand']<0:
+            G.add_edge('source',v)
+            G.edge['source'][v]['capacity']=G.node[v]['demand']*(-1)
+            total_demand=total_demand+G.edge['source'][v]['capacity']
+        elif G.node[v]['demand']>0:
+            G.add_edge(v,'sink')
+            G.edge[v]['sink']['capacity']=G.node[v]['demand']
+    flow_value, flow_dict = nx.maximum_flow(G, 'source', 'sink')
+    if flow_value==total_demand:
+        return flow_dict
+    else:
+        raise ValueError ('no flow satisfies the demand') 

@@ -1,0 +1,83 @@
+(defn hier 
+  [day]
+   (let
+   	 [x (first day)
+      y (last day)
+      xhier (assoc (assoc (into [] (seq x)) 8 (first (dec-date (getdate x)))) 9 (last (dec-date (getdate x))))
+  	  yhier (assoc (assoc (into [] (seq y)) 8 (first (dec-date (getdate y)))) 9 (last (dec-date (getdate y))))] 
+  	    (map str/join [xhier yhier])))
+
+
+(defn getdate [x] 
+	(let [ab (str/join [(nth (seq x) 8) (nth (seq x) 9)])]
+     (if (= (read-string (str (nth (seq x) 8))) 0) (read-string (str (nth (seq x) 9))) (read-string ab)
+		)))
+
+(defn dec-date [x] 
+	(if (> x 10) (str (dec x)) (str/join ["0" (dec x)])))
+
+(require '[clojure.string :as str])
+
+
+(defn ikea
+    [x]
+	(table-viz 
+		(select-keys
+			(ad-perf (get days x) [:psn :cid] :should [{:campaign_id "5570bd96a3fd03fe135102c6"} {:campaign_id "5570bc6e78592eee13868bc0"}]) pc)))
+
+(defn cart [colls]
+  (if (empty? colls)
+    '(())
+    (for [x (first colls)
+          more (cart (rest colls))]
+      (cons x more))))
+
+
+
+(defn homepage )
+
+(def r (map #(ad-perf (yesterday) 
+	[:psn :pv_tlo :cid] 
+	:should [{:campaign_id "5570bd96a3fd03fe135102c6"} {:campaign_id "5570bc6e78592eee13868bc0"}] 
+	:must {:psn %}) p_id))
+
+
+(def c ["ikea students lb" "ikea parents lb" "ikea students square" "ikea parents square"])
+
+(def r1234 (map #(filter (fn [[k v]] (= (get k 1) %)) r) c))
+
+(def r1234 
+	(for [R r 
+		  C c] 
+	 (filter (fn [[k v]] (= (get k 2) C)) R)))
+
+(defn display?
+ [pub]
+ (let [total (ad-perf (last-n-days 7) :campaign_id :must {:psn pub})
+ 	   all  (reduce + (map #((second %) :impressions) total))
+ 	   display ((total "Staples BTS 2015 Desktop Display") :impressions)]
+ 	   (> 0.15 (/ display all))))
+
+(defn native?
+ [pub]
+ (let [total (ad-perf (last-n-days 7) :campaign_id :must {:psn pub})
+ 	   all  (reduce + (map #((second %) :impressions) total))
+ 	   display ((total "Staples BTS 2015 Desktop Native") :impressions)]
+ 	   (> 0.15 (/ display all))))
+
+
+
+
+(fn [t] (> ((second t) :impressions) 1000))
+
+(fn [t] ())
+
+
+(defn fib
+ [x]
+ (if (> x 1)
+     (+ (fib (- x 1)) (fib (- x 2)))
+     1))
+
+
+
